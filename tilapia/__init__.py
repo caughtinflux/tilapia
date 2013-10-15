@@ -46,10 +46,12 @@ class TilapiaAPI(object):
                 data=json.dumps(payload), headers=headers).json
 
     def get_VPS_by_id(self, id):
-        return get("https://manage.tortois.es/vps/%d" % id, auth=self.auth).json
+        vps = get("https://manage.tortois.es/vps/%d" % id, auth=self.auth).json
+        return vps["service"]
 
-    def get_VPS_templates(self):
-        return get("https://manage.tortois.es/vps/%d/deploy" % id, auth=self.auth).json
+    def get_VPS_templates(self, id):
+        templates = get("https://manage.tortois.es/vps/%d/deploy" % id, auth=self.auth).json
+        return templates["templates"]
 
     def deploy_VPS_template(self, id, imagename, rootpass, arch):
         payload = {"imagename": imagename, "rootpass": rootpass, "arch": arch}
