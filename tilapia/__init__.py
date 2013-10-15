@@ -22,61 +22,65 @@ freely, subject to the following restrictions:
     distribution.
 """
 
-import requests
+from requests import get, post
+import json
 
 class TilapiaAPI(object):
     def __init__(self, username, apikey):
         self.username = username
         self.apikey = apikey
 
+        self.auth = (self.username, self.apikey)
+
     def list_VPS(self):
-        pass
+        vpslist = get("https://manage.tortois.es/vps/list", auth=self.auth).json
+        return vpslist["vpslist"]
 
     def list_signup_VPS(self):
-        pass
+        signuplist = get("https://manage.tortois.es/vps/signup", auth=self.auth).json
 
-    def signup_VPS(self):
-        pass
+    def signup_VPS(self, plan, region):
+        payload = {"plan": plan, "region": region}
+        headers = {'content-type': 'application/json'}
+        return post("https://manage.tortois.es/vps/signup", auth=self.auth,
+                data=json.dumps(payload), headers=headers).json
 
     def get_VPS_by_id(self, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d" % id, auth=self.auth).json
 
     def get_VPS_templates(self):
-        pass
+        return get("https://manage.tortois.es/vps/%d/deploy" % id, auth=self.auth).json
 
     def deploy_VPS_template(self, id, imagename, rootpass, arch):
-        pass
+        payload = {"imagename": imagename, "rootpass": rootpass, "arch": arch}
+        headers = {'content-type': 'application/json'}
+        return post("https://manage.tortois.es/vps/%d/deploy" % id, auth=self.auth,
+                data=json.dumps(payload), headers=headers).json
 
-    def set_VPS_nickname(self, id):
-        pass
+    def set_VPS_nickname(self, id, nickname):
+        payload = {"nickname": nickname}
+        headers = {'content-type': 'application/json'}
+        return post("https://manage.tortois.es/vps/%d/setnickname" % id,
+                auth=self.auth, data=json.dumps(payload), headers=headers).json
 
     def enable_VPS_monitoring(self, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d/monitoring/enable" % id, auth=self.auth).json
 
     def disable_VPS_monitoring(self, id):
-        pass
-
-    def get_HVM_iso(self, id):
-        pass
-
-    def set_HVM_iso(self, id):
-        pass
-
-    def set_HVM_bootorder(self, id):
-        pass
-
-    def set_HVM_nictype(self, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d/monitoring/disable" % id, auth=self.auth).json
 
     def startup(self, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d/create" % id, auth=self.auth).json
 
-    def shutdown(self, id):
-        pass
+    def shutdown(self, id, action="shutdown"):
+        if action == "shutdown" or action == "destory":
+            return get("https://manage.tortois.es/vps/%d/shutdown" % id, auth=self.auth).json
+        else:
+            raise NameError("Must be either \"shutdown\" or \"destroy\"")
 
     def getstatus(self, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d/status.json" % id, auth=self.auth).json
 
     def getjobs(seld, id):
-        pass
+        return get("https://manage.tortois.es/vps/%d/jobs.json" % id, auth=self.auth).json
 
