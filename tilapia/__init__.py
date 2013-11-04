@@ -75,7 +75,7 @@ class TilapiaAPI(object):
         return get("https://manage.tortois.es/vps/%d/create" % id, auth=self.auth).json
 
     def shutdown(self, id, action="shutdown"):
-        if action == "shutdown" or action == "destory":
+        if action == "shutdown" or action == "destroy":
             return get("https://manage.tortois.es/vps/%d/shutdown" % id, auth=self.auth).json
         else:
             raise NameError("Must be either \"shutdown\" or \"destroy\"")
